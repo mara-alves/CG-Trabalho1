@@ -1,4 +1,4 @@
-var camera, scene, renderer;
+var camera, camera1, camera2, camera3, scene, renderer;
 var geometry, material, mesh;
 var ball, plane, tube, cube, pyramid;
 
@@ -6,7 +6,7 @@ function render(){
 	'use strict';
 	renderer.render(scene, camera);
 
-}a
+}
 
 function addSphere(obj, x, y, z, r, ws, hs, c) {
 	'use strict';
@@ -209,13 +209,28 @@ function createDodecahedron(x, y, z, r, c){
 	scene.add(dode);
 }
 
-function createCamera(){
+function createCameras(){
 	'use strict';
-	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.x = 50;
-	camera.position.y = 50;
-	camera.position.z = 50;
-	camera.lookAt(scene.position);
+	camera1 = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+	camera1.position.x = 50;
+	camera1.position.y = 50;
+	camera1.position.z = 50;
+	camera1.lookAt(scene.position);
+
+	camera = camera1;
+
+	camera2 = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+	camera2.position.x = 0;
+	camera2.position.y = 0;
+	camera2.position.z = 0;
+	camera2.lookAt(scene.position);
+
+	camera3 = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+	camera3.position.x = -50;
+	camera3.position.y = -50;
+	camera3.position.z = -50;
+	camera3.lookAt(scene.position);
+
 }
 
 function createScene(){
@@ -271,6 +286,15 @@ function onKeyDown(e) {
 		case 115: //s
 			ball.userDate.jumping = !ball.userData.jumping;
 			break;
+		case 49: //1
+			camera = camera1;
+			break;
+		case 50: //2
+			camera = camera2;
+			break;
+		case 51: //3
+			camera = camera3;
+			break;
 	}
 
 	render();
@@ -300,7 +324,7 @@ function init(){
 	document.body.appendChild(renderer.domElement);
 
 	createScene();
-	createCamera();
+	createCameras();
 
 	render();
 
