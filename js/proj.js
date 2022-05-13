@@ -5,13 +5,12 @@ var ball, plane, tube, cube, pyramid;
 function render(){
 	'use strict';
 	renderer.render(scene, camera);
-
 }
 
 function addSphere(obj, x, y, z, r, ws, hs, c) {
 	'use strict';
 	geometry = new THREE.SphereGeometry(r, ws, hs);
-	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: true} );
+	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.position.set(x, y, z);
 
@@ -22,7 +21,7 @@ function addCylinder(obj, x, y, z, rt, rb, h, rs, rot, c) {
 	'use strict';
 	geometry = new THREE.CylinderGeometry( rt, rt, h, rs);
 	geometry.rotateX(rot);
-	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: true} );
+	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: false} );
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.position.set(x, y, z);
 
@@ -34,7 +33,7 @@ function addTorus(obj, x, y, z, r, t, rs, ts, rotX, rotZ, c) {
 	geometry = new THREE.TorusGeometry( r, t, rs, ts);
 	geometry.rotateX(rotX);
 	geometry.rotateZ(rotZ);
-	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: true} );
+	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.position.set(x, y, z);
 
@@ -44,17 +43,17 @@ function addTorus(obj, x, y, z, r, t, rs, ts, rotX, rotZ, c) {
 function addPyramid(obj, x, y, z, r, rs, hs, c) {
 	'use strict';
 	geometry = new THREE.ConeGeometry( r, rs, hs);
-	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: true} );
+	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
 	mesh = new THREE.Mesh(geometry, material);
 	mesh.position.set(x, y, z);
 
 	obj.add(mesh);
 }
 
-function createFigure1(x, y, z) {
+function createPlanet(x, y, z) {
 	'use strict';
 	var ball = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: true });
+	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
 	addSphere(ball, 0, 0, 0, 6, 10, 10, 0xcacaff);
 	addTorus(ball, 0, 0, 0, 11, 0.5, 16, 100, 1.30, 0xff);
@@ -66,15 +65,14 @@ function createFigure1(x, y, z) {
 	ball.position.z = z;
 }
 
-function createFigure2(x, y, z) {
+function createFish(x, y, z) {
 	'use strict';
 	var fish = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: true });
+	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
-	addSphere(fish, 20, 25, 30, 1, 10, 10, 0xff);
+	addSphere(fish, 5, 0, 5, 1, 10, 10, 0x6495ED);
 	addPyramid(fish, 0, 0, 0, 13, 21, 3, 0xffff00);
 	addPyramid(fish, 0, 0, -10, 8, 15, 3, 0xcacaff);
-
 
 	scene.add(fish);
 
@@ -83,12 +81,12 @@ function createFigure2(x, y, z) {
 	fish.position.z = z;
 }
 
-function createFigure3(x, y, z){
+function createFigure(x, y, z){
 	'use strict';
 	var ring = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: true });
+	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
-	addSphere(ring, 0, 19, 0, 2, 10, 10, 0xff);
+	addSphere(ring, 0, 19, 0, 2, 10, 10, 0x4B0082);
 	addTorus(ring, 0, 0, 0, 8, 1.5, 9, 21, 2.5, 0, 0xffff00);
 	addTorus(ring, 0, 10, -4, 6, 1, 9, 21, 2.5, 2, 0xcacaff);
 
@@ -99,14 +97,14 @@ function createFigure3(x, y, z){
 	ring.position.z = z;
 }
 
-function createFigure4(x, y, z){
+function createCylinders(x, y, z){
 	'use strict';
 	var cyl = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: true });
+	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
 	addCylinder(cyl, -13, -10, 0, 0.2, 0.2, 35, 64, 2.7, 0xcacaff);
 	addCylinder(cyl, 0, 0, 0, 0.2, 0.2, 35, 64, 3, 0xffff00);
-	addCylinder(cyl, 5, 5, -4, 0.2, 0.2, 35, 64, 3.2, 0xff);
+	addCylinder(cyl, 5, 5, -4, 0.2, 0.2, 35, 64, 3.2, 0x6495ED);
 
 	scene.add(cyl);
 
@@ -119,7 +117,7 @@ function createPlane(x, y, z){
 	'use strict';
 	plane = new THREE.Object3D();
 
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: true , side: THREE.DoubleSide} );
+	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false , side: THREE.DoubleSide} );
 	geometry = new THREE.PlaneGeometry( 15, 40);
 	geometry.rotateX(-0.79);
 	mesh = new THREE.Mesh(geometry, material);
@@ -128,7 +126,6 @@ function createPlane(x, y, z){
 	plane.position.set(x, y, z);
 
 	scene.add(plane);
-
 }
 
 function createTube(x, y, z){
@@ -153,12 +150,11 @@ function createTube(x, y, z){
 			return optionalTarget.set( tx, ty, tz ).multiplyScalar( this.scale );
 
 		}
-
 	}
 
 	const path = new CustomSinCurve( 10 );
 	const geometry = new THREE.TubeGeometry( path, 20, 2, 8, false );
-	const material = new THREE.MeshPhysicalMaterial( { color: 0x00ff00 , wireframe: true} );
+	const material = new THREE.MeshPhysicalMaterial( { color: '#CA8' , wireframe: false } );
 	const mesh = new THREE.Mesh( geometry, material );
 
 	tube.add(mesh);
@@ -170,7 +166,7 @@ function createCube(x, y, z, c) {
 	'use strict';
 	cube = new THREE.Object3D();
 
-	material = new THREE.MeshBasicMaterial({ color: c, wireframe: true} );
+	material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false} );
 	geometry = new THREE.BoxGeometry(5, 5, 5);
 	geometry.rotateX(-0.79);
 	mesh = new THREE.Mesh(geometry, material);
@@ -179,7 +175,6 @@ function createCube(x, y, z, c) {
 	cube.position.set(x, y, z);
 
 	scene.add(cube);
-
 }
 
 function createPyramid(x, y, z) {
@@ -188,7 +183,7 @@ function createPyramid(x, y, z) {
 
 	geometry = new THREE.ConeGeometry( 5, 13, 4);
 	geometry.rotateX(0.5);
-	material = new THREE.MeshBasicMaterial( {color: 0xDDA0DD,  wireframe: true} );
+	material = new THREE.MeshBasicMaterial( {color: 0xDDA0DD,  wireframe: false} );
 	mesh = new THREE.Mesh(geometry, material);
 
 	pyramid.add(mesh);
@@ -201,7 +196,7 @@ function createDodecahedron(x, y, z, r, c){
 	var dode = new THREE.Object3D();
 
 	geometry = new THREE.DodecahedronGeometry(r, 0);
-	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: true} );
+	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
 	mesh = new THREE.Mesh(geometry, material);
 
 	dode.add(mesh);
@@ -230,7 +225,6 @@ function createCameras(){
 	camera3.position.y = 0;
 	camera3.position.z = 100;
 	camera3.lookAt(scene.position);
-
 }
 
 function createScene(){
@@ -238,22 +232,25 @@ function createScene(){
 	scene = new THREE.Scene();
 	scene.add(new THREE.AxisHelper(10));
 
-	createFigure1(-30, 30, 30);
-	createFigure2(10, -10, -10);
+	createPlanet(-30, 30, 30);
+	createFish(10, -10, -10);
 	createPlane(0, 0, 0);
 	createTube(-10, 0, -50);
 	createCube(-10, -20, 25, 0xFFFFE0);
 	createCube(-20, -15, 15, 0x7FFFD4);
 	createCube(-15, -25, 13, 0x98FB98);
 	createPyramid(-10, 20, 10);
-	createFigure3(-30, -40, 40);
+	createFigure(-30, -40, 40);
 	createDodecahedron(15, -40, -15, 6, 0xDDA0DD);
-	createDodecahedron(25, -35, -25, 3, 0x00ff00);
-	createFigure4(12, -30, 20);
+	createDodecahedron(25, -35, -25, 3, 0x87CEEB);
+	createCylinders(12, -30, 20);
 
-	const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-	scene.add( directionalLight );
-	
+	const light = new THREE.HemisphereLight( 0xd44bff, 0xffa52d, 1 );
+	const light2 = new THREE.AmbientLight( 0xffffff, 1 );
+	const light3 = new THREE.DirectionalLight( 0xffffff, 0.8 );
+	scene.add( light );
+	scene.add( light2 );
+	scene.add( light3 );
 }
 
 function onResize() {
@@ -267,7 +264,6 @@ function onResize() {
 	}
 
 	render();
-
 }
 
 function onKeyDown(e) {
@@ -297,7 +293,6 @@ function onKeyDown(e) {
 	}
 
 	render();
-
 }
 
 function animate() {
