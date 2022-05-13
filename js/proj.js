@@ -211,24 +211,24 @@ function createDodecahedron(x, y, z, r, c){
 
 function createCameras(){
 	'use strict';
-	camera1 = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+	camera1 = new THREE.OrthographicCamera(window.innerWidth / -10, window.innerWidth / 10, window.innerHeight / 10, window.innerHeight / -10, 1, 1000);
 	camera1.position.x = 50;
 	camera1.position.y = 50;
 	camera1.position.z = 50;
 	camera1.lookAt(scene.position);
-
+	
 	camera = camera1;
-
-	camera2 = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+	
+	camera2 = new THREE.OrthographicCamera(window.innerWidth / -10, window.innerWidth / 10, window.innerHeight / 10, window.innerHeight / -10, 1, 1000);
 	camera2.position.x = 0;
-	camera2.position.y = 0;
+	camera2.position.y = 100;
 	camera2.position.z = 0;
 	camera2.lookAt(scene.position);
-
-	camera3 = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
-	camera3.position.x = -50;
-	camera3.position.y = -50;
-	camera3.position.z = -50;
+	
+	camera3 = new THREE.OrthographicCamera(window.innerWidth / -10, window.innerWidth / 10, window.innerHeight / 10, window.innerHeight / -10, 1, 1000);
+	camera3.position.x = 0;
+	camera3.position.y = 0;
+	camera3.position.z = 100;
 	camera3.lookAt(scene.position);
 
 }
@@ -274,26 +274,25 @@ function onKeyDown(e) {
 	'use strict';
 
 	switch (e.keyCode) {
-		case 65: //A
-		case 97: //a
+		case 83: //S
+		case 115: //s
+		ball.userDate.jumping = !ball.userData.jumping;
+		break;
+		case 49: //1
+		camera = camera1;
+		break;
+		case 50: //2
+		camera = camera2;
+		break;
+		case 51: //3
+		camera = camera3;
+		break;
+		case 52: //4
 			scene.traverse(function (node) {
 				if (node instanceof THREE.Mesh) {
 					node.material.wireframe = !node.material.wireframe;
 				}
 			});
-			break;
-		case 83: //S
-		case 115: //s
-			ball.userDate.jumping = !ball.userData.jumping;
-			break;
-		case 49: //1
-			camera = camera1;
-			break;
-		case 50: //2
-			camera = camera2;
-			break;
-		case 51: //3
-			camera = camera3;
 			break;
 	}
 
