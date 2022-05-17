@@ -1,12 +1,31 @@
+/*global THREE*/ 
+
+//cameras, scene and renderer + geometry, material and mesh for objects
 var camera, camera1, camera2, camera3, scene, renderer;
 var geometry, material, mesh;
+
+//stationary objects on the scene
 var ball, plane, tube, cube, pyramid;
 
+//articulate objects on the scene + pivot
+var mainTorus, secondTorus, sphere, pivot;
+
+//rotation booleans
+//RMP - Q, RMN - W, R2P - A, R2N - S, RSP - Z, RSN - X 
+var rotMainPositive = false, rotSecondPositive = false, rotSpherePositive = false, rotMainNegative = false, rotSecondNegative = false, rotSphereNegative = false;
+
+//translation booleans
+
+//articulate objects measurements
+var mainTorusRadius = 10, mainTorusTubeRadius = 2, secondTorusRadius = 8, secondTorusTubeRadius = mainTorusTubeRadius, sphereRadius = 2;
+
+//renders scene
 function render(){
 	'use strict';
 	renderer.render(scene, camera);
 }
 
+//create sphere
 function addSphere(obj, x, y, z, r, ws, hs, c) {
 	'use strict';
 	geometry = new THREE.SphereGeometry(r, ws, hs);
@@ -17,6 +36,7 @@ function addSphere(obj, x, y, z, r, ws, hs, c) {
 	obj.add(mesh);
 }
 
+//create cylinder
 function addCylinder(obj, x, y, z, rt, rb, h, rs, rot, c) {
 	'use strict';
 	geometry = new THREE.CylinderGeometry( rt, rt, h, rs);
@@ -28,6 +48,7 @@ function addCylinder(obj, x, y, z, rt, rb, h, rs, rot, c) {
 	obj.add(mesh);
 }
 
+//create torus
 function addTorus(obj, x, y, z, r, t, rs, ts, rotX, rotZ, c) {
 	'use strict';
 	geometry = new THREE.TorusGeometry( r, t, rs, ts);
@@ -40,6 +61,7 @@ function addTorus(obj, x, y, z, r, t, rs, ts, rotX, rotZ, c) {
 	obj.add(mesh);
 }
 
+//create pyramid
 function addPyramid(obj, x, y, z, r, rs, hs, c) {
 	'use strict';
 	geometry = new THREE.ConeGeometry( r, rs, hs);
@@ -50,6 +72,7 @@ function addPyramid(obj, x, y, z, r, rs, hs, c) {
 	obj.add(mesh);
 }
 
+//create Planet
 function createPlanet(x, y, z) {
 	'use strict';
 	var ball = new THREE.Object3D();
@@ -65,6 +88,7 @@ function createPlanet(x, y, z) {
 	ball.position.z = z;
 }
 
+//create Fish
 function createFish(x, y, z) {
 	'use strict';
 	var fish = new THREE.Object3D();
@@ -81,20 +105,37 @@ function createFish(x, y, z) {
 	fish.position.z = z;
 }
 
+//creates articulate object
 function createFigure(x, y, z){
+	//pos main: 10, -4, 6
+	//pos second: 0, 0, 8
+	//pos sphere: 0, 19, 0 (Estas posições podem não funcionar, mas já se ve)
 	'use strict';
-	var ring = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
+    
+    material = new THREE.MeshPhysicalMaterial({ color: '#cacaff'});
+    geometry = new THREE.TorusGeometry(mainTorusRadius, mainTorusTubeRadius, 16, 50);
+    mainTorus = new THREE.Mesh(geometry, material);
+    
+    material = new THREE.MeshPhysicalMaterial({ color: '#ffff00'});
+    geometry = new THREE.TorusGeometry(secondTorusRadius, secondTorusTubeRadius, 16, 50);
+    secondTorus = new THREE.Mesh(geometry, material);
+    secondTorus.rotateY(Math.PI/2);
+    
+    material = new THREE.MeshPhysicalMaterial({ color: '#4B0082'});
+    geometry = new THREE.SphereGeometry(sphereRadius, 32, 16);
+    sphere = new THREE.Mesh(geometry, material);
+    
+    pivot = new THREE.Group();
 
-	addSphere(ring, 0, 19, 0, 2, 10, 10, 0x4B0082);
-	addTorus(ring, 0, 0, 0, 8, 1.5, 9, 21, 2.5, 0, 0xffff00);
-	addTorus(ring, 0, 10, -4, 6, 1, 9, 21, 2.5, 2, 0xcacaff);
-
-	scene.add(ring);
-
-	ring.position.x = x;
-	ring.position.y = y;
-	ring.position.z = z;
+    sphere.position.set(0, secondTorusTubeRadius + sphereRadius, 0);
+    pivot.position.set(0, secondTorusRadius, 0); //5 + 4 + 4
+    secondTorus.position.set(0, mainTorusRadius, 0);
+    mainTorus.position.set(10, 5, 70);
+    
+    pivot.add(sphere);
+    secondTorus.add(pivot);
+    mainTorus.add(secondTorus);
+    scene.add(mainTorus);
 }
 
 function createCylinders(x, y, z){
@@ -206,7 +247,7 @@ function createDodecahedron(x, y, z, r, c){
 
 function createCameras(){
 	'use strict';
-	camera1 = new THREE.OrthographicCamera(window.innerWidth / -10, window.innerWidth / 10, window.innerHeight / 10, window.innerHeight / -10, 1, 1000);
+	camera1 = new THREE.OrthographicCamera(window.innerWidth / -15, window.innerWidth / 15, window.innerHeight / 15, window.innerHeight / -15, 1, 1000);
 	camera1.position.x = 50;
 	camera1.position.y = 50;
 	camera1.position.z = 50;
@@ -262,27 +303,21 @@ function onResize() {
 		camera.aspect = renderer.getSize().width / renderer.getSize().height;
 		camera.updateProjectionMatrix();
 	}
-
-	render();
 }
 
 function onKeyDown(e) {
 	'use strict';
 
 	switch (e.keyCode) {
-		case 83: //S
-		case 115: //s
-		ball.userDate.jumping = !ball.userData.jumping;
-		break;
 		case 49: //1
-		camera = camera1;
-		break;
+			camera = camera1;
+			break;
 		case 50: //2
-		camera = camera2;
-		break;
+			camera = camera2;
+			break;
 		case 51: //3
-		camera = camera3;
-		break;
+			camera = camera3;
+			break;
 		case 52: //4
 			scene.traverse(function (node) {
 				if (node instanceof THREE.Mesh) {
@@ -290,22 +325,98 @@ function onKeyDown(e) {
 				}
 			});
 			break;
-	}
+		
+		case 81: //Q
+		case 113: //q
+			rotMainPositive = true;
+			break;
 
-	render();
+		case 87: //W
+		case 119: //w
+			rotMainNegative = true;
+			break;
+
+		case 65: //A
+		case 97: //a
+			rotSecondPositive = true;
+			break;
+
+		case 83: //S
+		case 115: //s
+			rotSecondNegative = true
+			break;
+
+		case 90: //Z
+		case 122: //z
+			rotSpherePositive = true;
+			break;
+		
+		case 88: //X
+		case 120: //x
+			rotSphereNegative = true;
+			break;
+	}
+}
+
+function onKeyUp(e) {
+    'use strict';
+
+    switch(e.keyCode) {
+        case 81: //Q
+		case 113: //q
+			rotMainPositive = false;
+			break;
+
+		case 87: //W
+		case 119: //w
+			rotMainNegative = false;
+			break;
+
+		case 65: //A
+		case 97: //a
+			rotSecondPositive = false;
+			break;
+
+		case 83: //S
+		case 115: //s
+			rotSecondNegative = false;
+			break;
+
+		case 90: //Z
+		case 122: //z
+			rotSpherePositive = false;
+			break;
+		
+		case 88: //X
+		case 120: //x
+			rotSphereNegative = false;
+			break;
+    }
 }
 
 function animate() {
 	'use strict';
 
-	if (ball.userData.jumping) {
-		ball.userData.step += 0.04;
-		ball.position.y = Math.abs(30 * (Math.sin(ball.userData.step)));
-		ball.position.z = 15 * (Math.cos(ball.userData.step));
-	}
-	render();
+	if(rotMainPositive) 
+        mainTorus.rotateY(0.02);
 
-	requestAnimationFrame(animate);
+	if(rotMainNegative)
+		mainTorus.rotateY(-0.02);
+    
+    if(rotSecondPositive)
+        secondTorus.rotateZ(0.01);
+	
+	if(rotSecondNegative)
+		secondTorus.rotateZ(-0.01);
+    
+    if(rotSpherePositive)
+        pivot.rotation.x += 0.02;
+	
+	if(rotSphereNegative)
+		pivot.rotation.x -= 0.02;
+    
+    requestAnimationFrame(animate);
+    render();
 }
 
 function init(){
@@ -319,9 +430,8 @@ function init(){
 
 	createScene();
 	createCameras();
-
-	render();
-
+	
 	window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
+	window.addEventListener("keyup", onKeyUp);
 }
