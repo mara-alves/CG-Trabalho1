@@ -15,6 +15,8 @@ var mainTorus, secondTorus, sphere, pivot;
 var rotMainPositive = false, rotSecondPositive = false, rotSpherePositive = false, rotMainNegative = false, rotSecondNegative = false, rotSphereNegative = false;
 
 //translation booleans
+//X+: ->, X-: <-, Y+: up, Y-: down, Z+: C, Z-: D
+var moveXPositive = false, moveXNegative = false, moveYPositive = false, moveYNegative = false, moveZPositive = false, moveZNegative = false; 
 
 //articulate objects measurements
 var mainTorusRadius = 10, mainTorusTubeRadius = 2, secondTorusRadius = 8, secondTorusTubeRadius = mainTorusTubeRadius, sphereRadius = 2;
@@ -326,6 +328,7 @@ function onKeyDown(e) {
 			});
 			break;
 		
+		// =-=-=| Rotations |=-=-=
 		case 81: //Q
 		case 113: //q
 			rotMainPositive = true;
@@ -355,6 +358,33 @@ function onKeyDown(e) {
 		case 120: //x
 			rotSphereNegative = true;
 			break;
+		
+		// =-=-=| Translations |=-=-=
+		case 37: //left arrow
+			moveXNegative = true;
+			break;
+			
+		case 39: //right arrow
+			moveXPositive = true;
+			break;
+
+		case 38: //up arrow
+			moveYPositive = true;
+			break;
+
+		case 40: //down arrow
+			moveYNegative = true;
+			break;
+
+		case 68: //D
+		case 100: //d
+			moveZNegative = true;
+			break;
+
+		case 67: //C
+		case 99: //c
+			moveZPositive = true;
+			break;
 	}
 }
 
@@ -362,6 +392,7 @@ function onKeyUp(e) {
     'use strict';
 
     switch(e.keyCode) {
+		// =-=-=| Rotations |=-=-=
         case 81: //Q
 		case 113: //q
 			rotMainPositive = false;
@@ -391,6 +422,34 @@ function onKeyUp(e) {
 		case 120: //x
 			rotSphereNegative = false;
 			break;
+
+		// =-=-=| Translations |=-=-=
+
+		case 37: //left arrow
+			moveXNegative = false;
+			break;
+			
+		case 39: //right arrow
+			moveXPositive = false;
+			break;
+
+		case 38: //up arrow
+			moveYPositive = false;
+			break;
+
+		case 40: //down arrow
+			moveYNegative = false;
+			break;
+
+		case 68: //D
+		case 100: //d
+			moveZNegative = false;
+			break;
+
+		case 67: //C
+		case 99: //c
+			moveZPositive = false;
+			break;
     }
 }
 
@@ -414,6 +473,24 @@ function animate() {
 	
 	if(rotSphereNegative)
 		pivot.rotation.x -= 0.02;
+	
+	if(moveXPositive)
+		mainTorus.translateX(1.0);
+	
+	if(moveXNegative)
+		mainTorus.translateX(-1.0);
+	
+	if(moveYPositive)
+		mainTorus.translateY(1.0);
+	
+	if(moveYNegative)
+		mainTorus.translateY(-1.0);
+	
+	if(moveZPositive)
+		mainTorus.translateZ(1.0);
+	
+	if(moveZNegative)
+		mainTorus.translateZ(-1.0);
     
     requestAnimationFrame(animate);
     render();
@@ -430,7 +507,7 @@ function init(){
 
 	createScene();
 	createCameras();
-	
+
 	window.addEventListener("resize", onResize);
 	window.addEventListener("keydown", onKeyDown);
 	window.addEventListener("keyup", onKeyUp);
