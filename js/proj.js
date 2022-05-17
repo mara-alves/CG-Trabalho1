@@ -21,6 +21,8 @@ var moveXPositive = false, moveXNegative = false, moveYPositive = false, moveYNe
 //articulate objects measurements
 var mainTorusRadius = 10, mainTorusTubeRadius = 2, secondTorusRadius = 8, secondTorusTubeRadius = mainTorusTubeRadius, sphereRadius = 2;
 
+var viewSize = 1100, originalAspect;
+
 //renders scene
 function render(){
 	'use strict';
@@ -81,7 +83,7 @@ function createPlanet(x, y, z) {
 	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
 	addSphere(ball, 0, 0, 0, 6, 10, 10, 0xcacaff);
-	addTorus(ball, 0, 0, 0, 11, 0.5, 16, 100, 1.30, 0xff);
+	addTorus(ball, 0, 0, 0, 11, 0.5, 16, 100, 1.30, 0, 0xffffff);
 
 	scene.add(ball);
 
@@ -132,7 +134,7 @@ function createFigure(x, y, z){
     sphere.position.set(0, secondTorusTubeRadius + sphereRadius, 0);
     pivot.position.set(0, secondTorusRadius, 0); //5 + 4 + 4
     secondTorus.position.set(0, mainTorusRadius, 0);
-    mainTorus.position.set(10, 5, 70);
+    mainTorus.position.set(x, y, z);
     
     pivot.add(sphere);
     secondTorus.add(pivot);
@@ -249,7 +251,10 @@ function createDodecahedron(x, y, z, r, c){
 
 function createCameras(){
 	'use strict';
-	camera1 = new THREE.OrthographicCamera(window.innerWidth / -15, window.innerWidth / 15, window.innerHeight / 15, window.innerHeight / -15, 1, 1000);
+
+	originalAspect = window.innerWidth / window.innerHeight;
+	
+	camera1 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
 	camera1.position.x = 50;
 	camera1.position.y = 50;
 	camera1.position.z = 50;
@@ -257,13 +262,13 @@ function createCameras(){
 	
 	camera = camera1;
 	
-	camera2 = new THREE.OrthographicCamera(window.innerWidth / -10, window.innerWidth / 10, window.innerHeight / 10, window.innerHeight / -10, 1, 1000);
+	camera2 = new THREE.OrthographicCamera(viewSize * originalAspect/ -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
 	camera2.position.x = 0;
 	camera2.position.y = 100;
 	camera2.position.z = 0;
 	camera2.lookAt(scene.position);
 	
-	camera3 = new THREE.OrthographicCamera(window.innerWidth / -10, window.innerWidth / 10, window.innerHeight / 10, window.innerHeight / -10, 1, 1000);
+	camera3 = new THREE.OrthographicCamera(viewSize * originalAspect/ -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
 	camera3.position.x = 0;
 	camera3.position.y = 0;
 	camera3.position.z = 100;
@@ -299,12 +304,20 @@ function createScene(){
 function onResize() {
 	'use strict';
 
+	var aspect = window.innerWidth / window.innerHeight;
+	var change = originalAspect / aspect;
+    var newSize = viewSize * change;
+	console.log(originalAspect);
+
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
-	if(window.innerHeight > 0 && window.innerWidth > 0) {
-		camera.aspect = renderer.getSize().width / renderer.getSize().height;
-		camera.updateProjectionMatrix();
-	}
+    if (window.innerHeight > 0 && window.innerWidth > 0) {
+		camera.left = aspect * newSize / -15;
+		camera.right = aspect * newSize  / 15;
+		camera.top = newSize / 15;
+		camera.bottom = newSize / -15;
+        camera.updateProjectionMatrix();
+    }
 }
 
 function onKeyDown(e) {
