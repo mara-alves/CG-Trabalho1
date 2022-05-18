@@ -1,4 +1,4 @@
-/*global THREE*/ 
+/*global THREE*/
 
 //cameras, scene and renderer + geometry, material and mesh for objects
 var camera, camera1, camera2, camera3, scene, renderer;
@@ -12,516 +12,531 @@ var mainTorus, secondTorus, sphere, pivot;
 
 //rotation booleans
 //RMP - Q, RMN - W, R2P - A, R2N - S, RSP - Z, RSN - X 
-var rotMainPositive = false, rotSecondPositive = false, rotSpherePositive = false, rotMainNegative = false, rotSecondNegative = false, rotSphereNegative = false;
+var rotMainPositive = false,
+    rotSecondPositive = false,
+    rotSpherePositive = false,
+    rotMainNegative = false,
+    rotSecondNegative = false,
+    rotSphereNegative = false;
 
 //translation booleans
 //X+: ->, X-: <-, Y+: up, Y-: down, Z+: C, Z-: D
-var moveXPositive = false, moveXNegative = false, moveYPositive = false, moveYNegative = false, moveZPositive = false, moveZNegative = false; 
+var moveXPositive = false,
+    moveXNegative = false,
+    moveYPositive = false,
+    moveYNegative = false,
+    moveZPositive = false,
+    moveZNegative = false;
 
 //articulate objects measurements
-var mainTorusRadius = 10, mainTorusTubeRadius = 2, secondTorusRadius = 8, secondTorusTubeRadius = mainTorusTubeRadius, sphereRadius = 2;
+var mainTorusRadius = 10,
+    mainTorusTubeRadius = 2,
+    secondTorusRadius = 8,
+    secondTorusTubeRadius = mainTorusTubeRadius,
+    sphereRadius = 2;
 
-var viewSize = 1100, originalAspect;
+var viewSize = 1100,
+    originalAspect;
 
 //renders scene
-function render(){
-	'use strict';
-	renderer.render(scene, camera);
+function render() {
+    'use strict';
+    renderer.render(scene, camera);
 }
 
 //create sphere
 function addSphere(obj, x, y, z, r, ws, hs, c) {
-	'use strict';
-	geometry = new THREE.SphereGeometry(r, ws, hs);
-	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
-	mesh = new THREE.Mesh(geometry, material);
-	mesh.position.set(x, y, z);
+    'use strict';
+    geometry = new THREE.SphereGeometry(r, ws, hs);
+    material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
 
-	obj.add(mesh);
+    obj.add(mesh);
 }
 
 //create cylinder
 function addCylinder(obj, x, y, z, rt, rb, h, rs, rot, c) {
-	'use strict';
-	geometry = new THREE.CylinderGeometry( rt, rt, h, rs);
-	geometry.rotateX(rot);
-	material = new THREE.MeshBasicMaterial( {color: c,  wireframe: false} );
-	mesh = new THREE.Mesh(geometry, material);
-	mesh.position.set(x, y, z);
+    'use strict';
+    geometry = new THREE.CylinderGeometry(rt, rt, h, rs);
+    geometry.rotateX(rot);
+    material = new THREE.MeshBasicMaterial({ color: c, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
 
-	obj.add(mesh);
+    obj.add(mesh);
 }
 
 //create torus
 function addTorus(obj, x, y, z, r, t, rs, ts, rotX, rotZ, c) {
-	'use strict';
-	geometry = new THREE.TorusGeometry( r, t, rs, ts);
-	geometry.rotateX(rotX);
-	geometry.rotateZ(rotZ);
-	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
-	mesh = new THREE.Mesh(geometry, material);
-	mesh.position.set(x, y, z);
+    'use strict';
+    geometry = new THREE.TorusGeometry(r, t, rs, ts);
+    geometry.rotateX(rotX);
+    geometry.rotateZ(rotZ);
+    material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
 
-	obj.add(mesh);
+    obj.add(mesh);
 }
 
 //create pyramid
 function addPyramid(obj, x, y, z, r, rs, hs, c) {
-	'use strict';
-	geometry = new THREE.ConeGeometry( r, rs, hs);
-	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
-	mesh = new THREE.Mesh(geometry, material);
-	mesh.position.set(x, y, z);
+    'use strict';
+    geometry = new THREE.ConeGeometry(r, rs, hs);
+    material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
 
-	obj.add(mesh);
+    obj.add(mesh);
 }
 
 //create Planet
 function createPlanet(x, y, z) {
-	'use strict';
-	var ball = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
+    'use strict';
+    var ball = new THREE.Object3D();
+    material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
-	addSphere(ball, 0, 0, 0, 6, 10, 10, 0xcacaff);
-	addTorus(ball, 0, 0, 0, 11, 0.5, 16, 100, 1.30, 0, 0xffffff);
+    addSphere(ball, 0, 0, 0, 6, 10, 10, 0xcacaff);
+    addTorus(ball, 0, 0, 0, 11, 0.5, 16, 100, 1.30, 0, 0xffffff);
 
-	scene.add(ball);
+    scene.add(ball);
 
-	ball.position.x = x;
-	ball.position.y = y;
-	ball.position.z = z;
+    ball.position.x = x;
+    ball.position.y = y;
+    ball.position.z = z;
 }
 
 //create Fish
 function createFish(x, y, z) {
-	'use strict';
-	var fish = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
+    'use strict';
+    var fish = new THREE.Object3D();
+    material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
-	addSphere(fish, 5, 0, 5, 1, 10, 10, 0x6495ED);
-	addPyramid(fish, 0, 0, 0, 13, 21, 3, 0xffff00);
-	addPyramid(fish, 0, 0, -10, 8, 15, 3, 0xcacaff);
+    addSphere(fish, 5, 0, 5, 1, 10, 10, 0x6495ED);
+    addPyramid(fish, 0, 0, 0, 13, 21, 3, 0xffff00);
+    addPyramid(fish, 0, 0, -10, 8, 15, 3, 0xcacaff);
 
-	scene.add(fish);
+    scene.add(fish);
 
-	fish.position.x = x;
-	fish.position.y = y;
-	fish.position.z = z;
+    fish.position.x = x;
+    fish.position.y = y;
+    fish.position.z = z;
 }
 
 //creates articulate object
-function createFigure(x, y, z){
-	//pos main: 10, -4, 6
-	//pos second: 0, 0, 8
-	//pos sphere: 0, 19, 0 (Estas posições podem não funcionar, mas já se ve)
-	'use strict';
-    
-    material = new THREE.MeshPhysicalMaterial({ color: '#cacaff'});
+function createFigure(x, y, z) {
+    //pos main: 10, -4, 6
+    //pos second: 0, 0, 8
+    //pos sphere: 0, 19, 0 (Estas posições podem não funcionar, mas já se ve)
+    'use strict';
+
+    material = new THREE.MeshPhysicalMaterial({ color: '#cacaff' });
     geometry = new THREE.TorusGeometry(mainTorusRadius, mainTorusTubeRadius, 16, 50);
     mainTorus = new THREE.Mesh(geometry, material);
-    
-    material = new THREE.MeshPhysicalMaterial({ color: '#ffff00'});
+
+    material = new THREE.MeshPhysicalMaterial({ color: '#ffff00' });
     geometry = new THREE.TorusGeometry(secondTorusRadius, secondTorusTubeRadius, 16, 50);
     secondTorus = new THREE.Mesh(geometry, material);
-    secondTorus.rotateY(Math.PI/2);
-    
-    material = new THREE.MeshPhysicalMaterial({ color: '#4B0082'});
+    secondTorus.rotateY(Math.PI / 2);
+
+    material = new THREE.MeshPhysicalMaterial({ color: '#4B0082' });
     geometry = new THREE.SphereGeometry(sphereRadius, 32, 16);
     sphere = new THREE.Mesh(geometry, material);
-    
+
     pivot = new THREE.Group();
 
     sphere.position.set(0, secondTorusTubeRadius + sphereRadius, 0);
     pivot.position.set(0, secondTorusRadius, 0); //5 + 4 + 4
     secondTorus.position.set(0, mainTorusRadius, 0);
     mainTorus.position.set(x, y, z);
-    
+
     pivot.add(sphere);
     secondTorus.add(pivot);
     mainTorus.add(secondTorus);
     scene.add(mainTorus);
 }
 
-function createCylinders(x, y, z){
-	'use strict';
-	var cyl = new THREE.Object3D();
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
+function createCylinders(x, y, z) {
+    'use strict';
+    var cyl = new THREE.Object3D();
+    material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
 
-	addCylinder(cyl, -13, -10, 0, 0.2, 0.2, 35, 64, 2.7, 0xcacaff);
-	addCylinder(cyl, 0, 0, 0, 0.2, 0.2, 35, 64, 3, 0xffff00);
-	addCylinder(cyl, 5, 5, -4, 0.2, 0.2, 35, 64, 3.2, 0x6495ED);
+    addCylinder(cyl, -13, -10, 0, 0.2, 0.2, 35, 64, 2.7, 0xcacaff);
+    addCylinder(cyl, 0, 0, 0, 0.2, 0.2, 35, 64, 3, 0xffff00);
+    addCylinder(cyl, 5, 5, -4, 0.2, 0.2, 35, 64, 3.2, 0x6495ED);
 
-	scene.add(cyl);
+    scene.add(cyl);
 
-	cyl.position.x = x;
-	cyl.position.y = y;
-	cyl.position.z = z;
+    cyl.position.x = x;
+    cyl.position.y = y;
+    cyl.position.z = z;
 }
 
-function createPlane(x, y, z){
-	'use strict';
-	plane = new THREE.Object3D();
+function createPlane(x, y, z) {
+    'use strict';
+    plane = new THREE.Object3D();
 
-	material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false , side: THREE.DoubleSide} );
-	geometry = new THREE.PlaneGeometry( 15, 40);
-	geometry.rotateX(-0.79);
-	mesh = new THREE.Mesh(geometry, material);
+    material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false, side: THREE.DoubleSide });
+    geometry = new THREE.PlaneGeometry(15, 40);
+    geometry.rotateX(-0.79);
+    mesh = new THREE.Mesh(geometry, material);
 
-	plane.add(mesh);
-	plane.position.set(x, y, z);
+    plane.add(mesh);
+    plane.position.set(x, y, z);
 
-	scene.add(plane);
+    scene.add(plane);
 }
 
-function createTube(x, y, z){
-	'use strict';
-	tube = new THREE.Object3D();
-	class CustomSinCurve extends THREE.Curve {
+function createTube(x, y, z) {
+    'use strict';
+    tube = new THREE.Object3D();
+    class CustomSinCurve extends THREE.Curve {
 
-		constructor( scale = 1 ) {
+        constructor(scale = 1) {
 
-			super();
+            super();
 
-			this.scale = scale;
+            this.scale = scale;
 
-		}
+        }
 
-		getPoint( t, optionalTarget = new THREE.Vector3() ) {
+        getPoint(t, optionalTarget = new THREE.Vector3()) {
 
-			const tx = t * 3 - 1.5;
-			const ty = Math.sin( 2 * Math.PI * t );
-			const tz = 0;
+            const tx = t * 3 - 1.5;
+            const ty = Math.sin(2 * Math.PI * t);
+            const tz = 0;
 
-			return optionalTarget.set( tx, ty, tz ).multiplyScalar( this.scale );
+            return optionalTarget.set(tx, ty, tz).multiplyScalar(this.scale);
 
-		}
-	}
+        }
+    }
 
-	const path = new CustomSinCurve( 10 );
-	const geometry = new THREE.TubeGeometry( path, 20, 2, 8, false );
-	const material = new THREE.MeshPhysicalMaterial( { color: '#CA8' , wireframe: false } );
-	const mesh = new THREE.Mesh( geometry, material );
+    const path = new CustomSinCurve(10);
+    const geometry = new THREE.TubeGeometry(path, 20, 2, 8, false);
+    const material = new THREE.MeshPhysicalMaterial({ color: '#CA8', wireframe: false });
+    const mesh = new THREE.Mesh(geometry, material);
 
-	tube.add(mesh);
-	tube.position.set(x, y, z);
-	scene.add(tube);
+    tube.add(mesh);
+    tube.position.set(x, y, z);
+    scene.add(tube);
 }
 
 function createCube(x, y, z, c) {
-	'use strict';
-	cube = new THREE.Object3D();
+    'use strict';
+    cube = new THREE.Object3D();
 
-	material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false} );
-	geometry = new THREE.BoxGeometry(5, 5, 5);
-	geometry.rotateX(-0.79);
-	mesh = new THREE.Mesh(geometry, material);
+    material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false });
+    geometry = new THREE.BoxGeometry(5, 5, 5);
+    geometry.rotateX(-0.79);
+    mesh = new THREE.Mesh(geometry, material);
 
-	cube.add(mesh);
-	cube.position.set(x, y, z);
+    cube.add(mesh);
+    cube.position.set(x, y, z);
 
-	scene.add(cube);
+    scene.add(cube);
 }
 
 function createPyramid(x, y, z) {
-	'use strict';
-	pyramid = new THREE.Object3D();
+    'use strict';
+    pyramid = new THREE.Object3D();
 
-	geometry = new THREE.ConeGeometry( 5, 13, 4);
-	geometry.rotateX(0.5);
-	material = new THREE.MeshBasicMaterial( {color: 0xDDA0DD,  wireframe: false} );
-	mesh = new THREE.Mesh(geometry, material);
+    geometry = new THREE.ConeGeometry(5, 13, 4);
+    geometry.rotateX(0.5);
+    material = new THREE.MeshBasicMaterial({ color: 0xDDA0DD, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
 
-	pyramid.add(mesh);
-	pyramid.position.set(x, y, z);
-	scene.add(pyramid);
+    pyramid.add(mesh);
+    pyramid.position.set(x, y, z);
+    scene.add(pyramid);
 }
 
-function createDodecahedron(x, y, z, r, c){
-	'use strict';
-	var dode = new THREE.Object3D();
+function createDodecahedron(x, y, z, r, c) {
+    'use strict';
+    var dode = new THREE.Object3D();
 
-	geometry = new THREE.DodecahedronGeometry(r, 0);
-	material = new THREE.MeshPhysicalMaterial( {color: c,  wireframe: false} );
-	mesh = new THREE.Mesh(geometry, material);
+    geometry = new THREE.DodecahedronGeometry(r, 0);
+    material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false });
+    mesh = new THREE.Mesh(geometry, material);
 
-	dode.add(mesh);
-	dode.position.set(x, y, z);
-	scene.add(dode);
+    dode.add(mesh);
+    dode.position.set(x, y, z);
+    scene.add(dode);
 }
 
-function createCameras(){
-	'use strict';
+function createCameras() {
+    'use strict';
 
-	originalAspect = window.innerWidth / window.innerHeight;
-	
-	camera1 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
-	camera1.position.x = 50;
-	camera1.position.y = 50;
-	camera1.position.z = 50;
-	camera1.lookAt(scene.position);
-	
-	camera = camera1;
-	
-	camera2 = new THREE.OrthographicCamera(viewSize * originalAspect/ -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
-	camera2.position.x = 0;
-	camera2.position.y = 100;
-	camera2.position.z = 0;
-	camera2.lookAt(scene.position);
-	
-	camera3 = new THREE.OrthographicCamera(viewSize * originalAspect/ -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
-	camera3.position.x = 0;
-	camera3.position.y = 0;
-	camera3.position.z = 100;
-	camera3.lookAt(scene.position);
+    originalAspect = window.innerWidth / window.innerHeight;
+
+    camera1 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
+    camera1.position.x = 50;
+    camera1.position.y = 50;
+    camera1.position.z = 50;
+    camera1.lookAt(scene.position);
+
+    camera = camera1;
+
+    camera2 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
+    camera2.position.x = 0;
+    camera2.position.y = 100;
+    camera2.position.z = 0;
+    camera2.lookAt(scene.position);
+
+    camera3 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
+    camera3.position.x = 0;
+    camera3.position.y = 0;
+    camera3.position.z = 100;
+    camera3.lookAt(scene.position);
 }
 
-function createScene(){
-	'use strict';
-	scene = new THREE.Scene();
-	scene.add(new THREE.AxisHelper(10));
+function createScene() {
+    'use strict';
+    scene = new THREE.Scene();
+    scene.add(new THREE.AxisHelper(10));
 
-	createPlanet(-30, 30, 30);
-	createFish(10, -10, -10);
-	createPlane(0, 0, 0);
-	createTube(-10, 0, -50);
-	createCube(-10, -20, 25, 0xFFFFE0);
-	createCube(-20, -15, 15, 0x7FFFD4);
-	createCube(-15, -25, 13, 0x98FB98);
-	createPyramid(-10, 20, 10);
-	createFigure(-30, -40, 40);
-	createDodecahedron(15, -40, -15, 6, 0xDDA0DD);
-	createDodecahedron(25, -35, -25, 3, 0x87CEEB);
-	createCylinders(12, -30, 20);
+    createPlanet(-30, 30, 30);
+    createFish(10, -10, -10);
+    createPlane(0, 0, 0);
+    createTube(-10, 0, -50);
+    createCube(-10, -20, 25, 0xFFFFE0);
+    createCube(-20, -15, 15, 0x7FFFD4);
+    createCube(-15, -25, 13, 0x98FB98);
+    createPyramid(-10, 20, 10);
+    createFigure(-30, -40, 40);
+    createDodecahedron(15, -40, -15, 6, 0xDDA0DD);
+    createDodecahedron(25, -35, -25, 3, 0x87CEEB);
+    createCylinders(12, -30, 20);
 
-	const light = new THREE.HemisphereLight( 0xd44bff, 0xffa52d, 1 );
-	const light2 = new THREE.AmbientLight( 0xffffff, 1 );
-	const light3 = new THREE.DirectionalLight( 0xffffff, 0.8 );
-	scene.add( light );
-	scene.add( light2 );
-	scene.add( light3 );
+    const light = new THREE.HemisphereLight(0xd44bff, 0xffa52d, 1);
+    const light2 = new THREE.AmbientLight(0xffffff, 1);
+    const light3 = new THREE.DirectionalLight(0xffffff, 0.8);
+    scene.add(light);
+    scene.add(light2);
+    scene.add(light3);
 }
 
 function onResize() {
-	'use strict';
+    'use strict';
 
-	var aspect = window.innerWidth / window.innerHeight;
-	var change = originalAspect / aspect;
+    var aspect = window.innerWidth / window.innerHeight;
+    var change = originalAspect / aspect;
     var newSize = viewSize * change;
-	console.log(originalAspect);
+    console.log(originalAspect);
 
-	renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
     if (window.innerHeight > 0 && window.innerWidth > 0) {
-		camera.left = aspect * newSize / -15;
-		camera.right = aspect * newSize  / 15;
-		camera.top = newSize / 15;
-		camera.bottom = newSize / -15;
+        camera.left = aspect * newSize / -15;
+        camera.right = aspect * newSize / 15;
+        camera.top = newSize / 15;
+        camera.bottom = newSize / -15;
         camera.updateProjectionMatrix();
     }
 }
 
 function onKeyDown(e) {
-	'use strict';
+    'use strict';
 
-	switch (e.keyCode) {
-		case 49: //1
-			camera = camera1;
-			break;
-		case 50: //2
-			camera = camera2;
-			break;
-		case 51: //3
-			camera = camera3;
-			break;
-		case 52: //4
-			scene.traverse(function (node) {
-				if (node instanceof THREE.Mesh) {
-					node.material.wireframe = !node.material.wireframe;
-				}
-			});
-			break;
-		
-		// =-=-=| Rotations |=-=-=
-		case 81: //Q
-		case 113: //q
-			rotMainPositive = true;
-			break;
+    switch (e.keyCode) {
+        case 49: //1
+            camera = camera1;
+            break;
+        case 50: //2
+            camera = camera2;
+            break;
+        case 51: //3
+            camera = camera3;
+            break;
+        case 52: //4
+            scene.traverse(function(node) {
+                if (node instanceof THREE.Mesh) {
+                    node.material.wireframe = !node.material.wireframe;
+                }
+            });
+            break;
 
-		case 87: //W
-		case 119: //w
-			rotMainNegative = true;
-			break;
+            // =-=-=| Rotations |=-=-=
+        case 81: //Q
+        case 113: //q
+            rotMainPositive = true;
+            break;
 
-		case 65: //A
-		case 97: //a
-			rotSecondPositive = true;
-			break;
+        case 87: //W
+        case 119: //w
+            rotMainNegative = true;
+            break;
 
-		case 83: //S
-		case 115: //s
-			rotSecondNegative = true
-			break;
+        case 65: //A
+        case 97: //a
+            rotSecondPositive = true;
+            break;
 
-		case 90: //Z
-		case 122: //z
-			rotSpherePositive = true;
-			break;
-		
-		case 88: //X
-		case 120: //x
-			rotSphereNegative = true;
-			break;
-		
-		// =-=-=| Translations |=-=-=
-		case 37: //left arrow
-			moveXNegative = true;
-			break;
-			
-		case 39: //right arrow
-			moveXPositive = true;
-			break;
+        case 83: //S
+        case 115: //s
+            rotSecondNegative = true
+            break;
 
-		case 38: //up arrow
-			moveYPositive = true;
-			break;
+        case 90: //Z
+        case 122: //z
+            rotSpherePositive = true;
+            break;
 
-		case 40: //down arrow
-			moveYNegative = true;
-			break;
+        case 88: //X
+        case 120: //x
+            rotSphereNegative = true;
+            break;
 
-		case 68: //D
-		case 100: //d
-			moveZNegative = true;
-			break;
+            // =-=-=| Translations |=-=-=
+        case 37: //left arrow
+            moveXNegative = true;
+            break;
 
-		case 67: //C
-		case 99: //c
-			moveZPositive = true;
-			break;
-	}
+        case 39: //right arrow
+            moveXPositive = true;
+            break;
+
+        case 38: //up arrow
+            moveYPositive = true;
+            break;
+
+        case 40: //down arrow
+            moveYNegative = true;
+            break;
+
+        case 68: //D
+        case 100: //d
+            moveZNegative = true;
+            break;
+
+        case 67: //C
+        case 99: //c
+            moveZPositive = true;
+            break;
+    }
 }
 
 function onKeyUp(e) {
     'use strict';
 
-    switch(e.keyCode) {
-		// =-=-=| Rotations |=-=-=
+    switch (e.keyCode) {
+        // =-=-=| Rotations |=-=-=
         case 81: //Q
-		case 113: //q
-			rotMainPositive = false;
-			break;
+        case 113: //q
+            rotMainPositive = false;
+            break;
 
-		case 87: //W
-		case 119: //w
-			rotMainNegative = false;
-			break;
+        case 87: //W
+        case 119: //w
+            rotMainNegative = false;
+            break;
 
-		case 65: //A
-		case 97: //a
-			rotSecondPositive = false;
-			break;
+        case 65: //A
+        case 97: //a
+            rotSecondPositive = false;
+            break;
 
-		case 83: //S
-		case 115: //s
-			rotSecondNegative = false;
-			break;
+        case 83: //S
+        case 115: //s
+            rotSecondNegative = false;
+            break;
 
-		case 90: //Z
-		case 122: //z
-			rotSpherePositive = false;
-			break;
-		
-		case 88: //X
-		case 120: //x
-			rotSphereNegative = false;
-			break;
+        case 90: //Z
+        case 122: //z
+            rotSpherePositive = false;
+            break;
 
-		// =-=-=| Translations |=-=-=
+        case 88: //X
+        case 120: //x
+            rotSphereNegative = false;
+            break;
 
-		case 37: //left arrow
-			moveXNegative = false;
-			break;
-			
-		case 39: //right arrow
-			moveXPositive = false;
-			break;
+            // =-=-=| Translations |=-=-=
 
-		case 38: //up arrow
-			moveYPositive = false;
-			break;
+        case 37: //left arrow
+            moveXNegative = false;
+            break;
 
-		case 40: //down arrow
-			moveYNegative = false;
-			break;
+        case 39: //right arrow
+            moveXPositive = false;
+            break;
 
-		case 68: //D
-		case 100: //d
-			moveZNegative = false;
-			break;
+        case 38: //up arrow
+            moveYPositive = false;
+            break;
 
-		case 67: //C
-		case 99: //c
-			moveZPositive = false;
-			break;
+        case 40: //down arrow
+            moveYNegative = false;
+            break;
+
+        case 68: //D
+        case 100: //d
+            moveZNegative = false;
+            break;
+
+        case 67: //C
+        case 99: //c
+            moveZPositive = false;
+            break;
     }
 }
 
 function animate() {
-	'use strict';
+    'use strict';
 
-	if(rotMainPositive) 
+    if (rotMainPositive)
         mainTorus.rotateY(0.02);
 
-	if(rotMainNegative)
-		mainTorus.rotateY(-0.02);
-    
-    if(rotSecondPositive)
+    if (rotMainNegative)
+        mainTorus.rotateY(-0.02);
+
+    if (rotSecondPositive)
         secondTorus.rotateZ(0.01);
-	
-	if(rotSecondNegative)
-		secondTorus.rotateZ(-0.01);
-    
-    if(rotSpherePositive)
+
+    if (rotSecondNegative)
+        secondTorus.rotateZ(-0.01);
+
+    if (rotSpherePositive)
         pivot.rotation.x += 0.02;
-	
-	if(rotSphereNegative)
-		pivot.rotation.x -= 0.02;
-	
-	if(moveXPositive)
-		mainTorus.translateX(1.0);
-	
-	if(moveXNegative)
-		mainTorus.translateX(-1.0);
-	
-	if(moveYPositive)
-		mainTorus.translateY(1.0);
-	
-	if(moveYNegative)
-		mainTorus.translateY(-1.0);
-	
-	if(moveZPositive)
-		mainTorus.translateZ(1.0);
-	
-	if(moveZNegative)
-		mainTorus.translateZ(-1.0);
-    
+
+    if (rotSphereNegative)
+        pivot.rotation.x -= 0.02;
+
+    if (moveXPositive)
+        mainTorus.translateX(1.0);
+
+    if (moveXNegative)
+        mainTorus.translateX(-1.0);
+
+    if (moveYPositive)
+        mainTorus.translateY(1.0);
+
+    if (moveYNegative)
+        mainTorus.translateY(-1.0);
+
+    if (moveZPositive)
+        mainTorus.translateZ(1.0);
+
+    if (moveZNegative)
+        mainTorus.translateZ(-1.0);
+
     requestAnimationFrame(animate);
     render();
 }
 
-function init(){
-	'use strict';
+function init() {
+    'use strict';
 
-	renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-	renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-	document.body.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
 
-	createScene();
-	createCameras();
+    createScene();
+    createCameras();
 
-	window.addEventListener("resize", onResize);
-	window.addEventListener("keydown", onKeyDown);
-	window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
 }
