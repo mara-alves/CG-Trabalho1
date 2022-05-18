@@ -327,11 +327,23 @@ function onResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     if (window.innerHeight > 0 && window.innerWidth > 0) {
-        camera.left = aspect * newSize / -15;
-        camera.right = aspect * newSize / 15;
-        camera.top = newSize / 15;
-        camera.bottom = newSize / -15;
-        camera.updateProjectionMatrix();
+        camera1.left = aspect * newSize / -15;
+        camera1.right = aspect * newSize / 15;
+        camera1.top = newSize / 15;
+        camera1.bottom = newSize / -15;
+        camera1.updateProjectionMatrix();
+
+        camera2.left = aspect * newSize / -15;
+        camera2.right = aspect * newSize / 15;
+        camera2.top = newSize / 15;
+        camera2.bottom = newSize / -15;
+        camera2.updateProjectionMatrix();
+
+        camera3.left = aspect * newSize / -15;
+        camera3.right = aspect * newSize / 15;
+        camera3.top = newSize / 15;
+        camera3.bottom = newSize / -15;
+        camera3.updateProjectionMatrix();
     }
 }
 
