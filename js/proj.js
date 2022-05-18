@@ -126,9 +126,6 @@ function createFish(x, y, z) {
 
 //creates articulate object
 function createFigure(x, y, z) {
-    //pos main: 10, -4, 6
-    //pos second: 0, 0, 8
-    //pos sphere: 0, 19, 0 (Estas posições podem não funcionar, mas já se ve)
     'use strict';
 
     material = new THREE.MeshPhysicalMaterial({ color: '#cacaff' });
