@@ -10,8 +10,8 @@ var ball, plane, tube, cube, pyramid;
 //articulate objects on the scene + pivot
 var mainBody, mainTorus, secondTorus, sphere, pivot;
 
-//var clock = new THREE.Clock();
-//var delta;
+var clock = new THREE.Clock();
+var delta;
 
 //rotation booleans
 //RMP - Q, RMN - W, R2P - A, R2N - S, RSP - Z, RSN - X 
@@ -44,6 +44,7 @@ var viewSize = 1100,
 //renders scene
 function render() {
     'use strict';
+    delta = clock.getDelta();
     renderer.render(scene, camera);
 }
 
@@ -503,8 +504,9 @@ function onKeyUp(e) {
 function animate() {
     'use strict';
 
-    //delta = clock.getDelta();
     var translateVector = new THREE.Vector3(0, 0, 0);
+
+    var movement = 50;
 
     if (rotMainPositive)
         mainTorus.rotateY(0.02);
@@ -525,29 +527,28 @@ function animate() {
         pivot.rotation.x -= 0.02;
 
     if (moveXPositive)
-        translateVector.x += 1;
+        translateVector.x += movement;
 
     if (moveXNegative)
-        translateVector.x -= 1;
+        translateVector.x -= movement;
 
     if (moveYPositive)
-        translateVector.y += 1;
+        translateVector.y += movement;
 
     if (moveYNegative)
-        translateVector.y -= 1;
+        translateVector.y -= movement;
 
     if (moveZPositive)
-        translateVector.z += 1;
+        translateVector.z += movement;
 
     if (moveZNegative)
-        translateVector.z -= 1;
+        translateVector.z -= movement;
 
-    //delta = clock.getDelta();
-    //console.log(delta);
+    console.log(delta);
 
-    mainBody.translateX(translateVector.x);
-    mainBody.translateY(translateVector.y);
-    mainBody.translateZ(translateVector.z);
+    mainBody.translateX(translateVector.x * delta);
+    mainBody.translateY(translateVector.y * delta);
+    mainBody.translateZ(translateVector.z * delta);
 
     requestAnimationFrame(animate);
     render();
