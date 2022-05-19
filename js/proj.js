@@ -38,7 +38,7 @@ var mainTorusRadius = 10,
     secondTorusTubeRadius = mainTorusTubeRadius,
     sphereRadius = 2;
 
-var viewSize = 1100,
+var viewSize = 950,
     originalAspect;
 
 //renders scene
@@ -315,7 +315,6 @@ function createCameras() {
 function createScene() {
     'use strict';
     scene = new THREE.Scene();
-    scene.add(new THREE.AxisHelper(10));
 
     createPlanet(-30, 30, 30);
     createFish(10, -10, -10);
