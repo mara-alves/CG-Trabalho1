@@ -39,7 +39,7 @@ var mainTorusRadius = 10,
     sphereRadius = 2;
 
 var viewSize = 950,
-    originalAspect;
+    aspectRatio = window.innerWidth / window.innerHeight;;
 
 //renders scene
 function render() {
@@ -289,9 +289,7 @@ function createTorusKnot(x, y, z){
 function createCameras() {
     'use strict';
 
-    originalAspect = window.innerWidth / window.innerHeight;
-
-    camera1 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
+    camera1 = new THREE.OrthographicCamera(viewSize * aspectRatio / -15, viewSize * aspectRatio / 15, viewSize / 15, viewSize / -15, 1, 1000);
     camera1.position.x = 50;
     camera1.position.y = 50;
     camera1.position.z = 50;
@@ -299,13 +297,13 @@ function createCameras() {
 
     camera = camera1;
 
-    camera2 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
+    camera2 = new THREE.OrthographicCamera(viewSize * aspectRatio / -15, viewSize * aspectRatio / 15, viewSize / 15, viewSize / -15, 1, 1000);
     camera2.position.x = 0;
     camera2.position.y = 100;
     camera2.position.z = 0;
     camera2.lookAt(scene.position);
 
-    camera3 = new THREE.OrthographicCamera(viewSize * originalAspect / -15, viewSize * originalAspect / 15, viewSize / 15, viewSize / -15, 1, 1000);
+    camera3 = new THREE.OrthographicCamera(viewSize * aspectRatio / -15, viewSize * aspectRatio / 15, viewSize / 15, viewSize / -15, 1, 1000);
     camera3.position.x = 0;
     camera3.position.y = 0;
     camera3.position.z = 100;
@@ -339,33 +337,20 @@ function createScene() {
 }
 
 function onResize() {
-    'use strict';
-
-    var aspect = window.innerWidth / window.innerHeight;
-    var change = originalAspect / aspect;
-    var newSize = viewSize * change;
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    if (window.innerHeight > 0 && window.innerWidth > 0) {
-        camera1.left = aspect * newSize / -15;
-        camera1.right = aspect * newSize / 15;
-        camera1.top = newSize / 15;
-        camera1.bottom = newSize / -15;
-        camera1.updateProjectionMatrix();
-
-        camera2.left = aspect * newSize / -15;
-        camera2.right = aspect * newSize / 15;
-        camera2.top = newSize / 15;
-        camera2.bottom = newSize / -15;
-        camera2.updateProjectionMatrix();
-
-        camera3.left = aspect * newSize / -15;
-        camera3.right = aspect * newSize / 15;
-        camera3.top = newSize / 15;
-        camera3.bottom = newSize / -15;
-        camera3.updateProjectionMatrix();
+    var new_height = window.innerWidth / aspectRatio;
+    if(new_height <= window.innerHeight){
+        camera1.aspect = aspectRatio;
+        camera2.aspect = aspectRatio;
+        camera3.aspect = aspectRatio;
+        renderer.setSize(window.innerWidth, new_height);
     }
+    else{
+        camera1.aspect = 1 / aspectRatio;
+        camera2.aspect = 1 / aspectRatio;
+        camera3.aspect = 1 / aspectRatio;
+        renderer.setSize(window.innerHeight * aspectRatio, window.innerHeight);
+    }
+    camera.updateProjectionMatrix();
 }
 
 function onKeyDown(e) {
@@ -556,8 +541,6 @@ function animate() {
 
     if (moveZNegative)
         translateVector.z -= movement;
-
-    console.log(delta);
 
     mainBody.translateX(translateVector.x * delta);
     mainBody.translateY(translateVector.y * delta);
