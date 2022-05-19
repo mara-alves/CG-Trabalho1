@@ -85,9 +85,9 @@ function addTorus(obj, x, y, z, r, t, rs, ts, rotX, rotZ, c) {
 }
 
 //create pyramid
-function addPyramid(obj, x, y, z, r, rs, hs, c) {
+function addPyramid(obj, x, y, z, r, h, rs, c) {
     'use strict';
-    geometry = new THREE.ConeGeometry(r, rs, hs);
+    geometry = new THREE.ConeGeometry(r, h, rs, 8);
     material = new THREE.MeshPhysicalMaterial({ color: c, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(x, y, z);
@@ -115,10 +115,10 @@ function createPlanet(x, y, z) {
 function createFish(x, y, z) {
     'use strict';
     var fish = new THREE.Object3D();
-    material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false });
+    material = new THREE.MeshPhysicalMaterial({ color: 0xcacaff, wireframe: false });
 
     addSphere(fish, 5, 0, 5, 1, 10, 10, 0x6495ED);
-    addPyramid(fish, 0, 0, 0, 13, 21, 3, 0xffff00);
+    addPyramid(fish, 0, 0, 0, 13, 21, 3, 0x90EE90);
     addPyramid(fish, 0, 0, -10, 8, 15, 3, 0xcacaff);
 
     scene.add(fish);
@@ -186,8 +186,8 @@ function createPlane(x, y, z) {
     'use strict';
     plane = new THREE.Object3D();
 
-    material = new THREE.MeshBasicMaterial({ color: 0xcacaff, wireframe: false, side: THREE.DoubleSide });
-    geometry = new THREE.PlaneGeometry(15, 40);
+    material = new THREE.MeshPhysicalMaterial({ color: 0x87CEFA, wireframe: false, side: THREE.DoubleSide });
+    geometry = new THREE.PlaneGeometry(15, 40, 13, 13);
     geometry.rotateX(-0.79);
     mesh = new THREE.Mesh(geometry, material);
 
@@ -250,9 +250,9 @@ function createPyramid(x, y, z) {
     'use strict';
     pyramid = new THREE.Object3D();
 
-    geometry = new THREE.ConeGeometry(5, 13, 4);
+    geometry = new THREE.ConeGeometry(5, 13, 4, 8);
     geometry.rotateX(0.5);
-    material = new THREE.MeshBasicMaterial({ color: 0xDDA0DD, wireframe: false });
+    material = new THREE.MeshPhysicalMaterial({ color: 0xDDA0DD, wireframe: false });
     mesh = new THREE.Mesh(geometry, material);
 
     pyramid.add(mesh);
@@ -271,6 +271,19 @@ function createDodecahedron(x, y, z, r, c) {
     dode.add(mesh);
     dode.position.set(x, y, z);
     scene.add(dode);
+}
+
+function createTorusKnot(x, y, z){
+	'use strict';
+	var knot = new THREE.Object3D();
+
+	geometry = new THREE.TorusKnotGeometry( 5.6, 1, 55, 8);
+	material = new THREE.MeshPhysicalMaterial( { color: 0xCD5C5C } );
+	mesh = new THREE.Mesh( geometry, material );
+
+	knot.add(mesh);
+	knot.position.set(x, y, z);
+	scene.add(knot);
 }
 
 function createCameras() {
@@ -308,14 +321,15 @@ function createScene() {
     createFish(10, -10, -10);
     createPlane(0, 0, 0);
     createTube(-10, 0, -50);
-    createCube(-10, -20, 25, 0xFFFFE0);
-    createCube(-20, -15, 15, 0x7FFFD4);
+    createCube(-10, -20, 30, 0xFFFFE0);
+    createCube(-20, -15, 15, 0x00FFFF);
     createCube(-15, -25, 13, 0x98FB98);
     createPyramid(-10, 20, 10);
     createFigure(-30, -40, 40);
     createDodecahedron(15, -40, -15, 6, 0xDDA0DD);
-    createDodecahedron(25, -35, -25, 3, 0x87CEEB);
+    createDodecahedron(25, -35, -25, 3, 0xCD5C5C);
     createCylinders(12, -30, 20);
+    createTorusKnot(15, 20, 7);
 
     const light = new THREE.HemisphereLight(0xd44bff, 0xffa52d, 1);
     const light2 = new THREE.AmbientLight(0xffffff, 1);
