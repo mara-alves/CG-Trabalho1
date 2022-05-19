@@ -38,8 +38,12 @@ var mainTorusRadius = 10,
     secondTorusTubeRadius = mainTorusTubeRadius,
     sphereRadius = 2;
 
-var viewSize = 950,
-    aspectRatio = window.innerWidth / window.innerHeight;;
+var ratio = 1.25, 
+    scale = 0.013, 
+    scale_width, 
+    scale_height, 
+    last_width, 
+    last_height;
 
 //renders scene
 function render() {
@@ -289,25 +293,31 @@ function createTorusKnot(x, y, z){
 function createCameras() {
     'use strict';
 
-    camera1 = new THREE.OrthographicCamera(viewSize * aspectRatio / -15, viewSize * aspectRatio / 15, viewSize / 15, viewSize / -15, 1, 1000);
-    camera1.position.x = 50;
-    camera1.position.y = 50;
-    camera1.position.z = 50;
+    if (window.innerWidth / window.innerHeight > ratio) {
+        camera1 = new THREE.OrthographicCamera(-window.innerWidth / scale_height, window.innerWidth / scale_height, window.innerHeight / scale_height, -window.innerHeight / scale_height, 1, 1000);
+        camera2 = new THREE.OrthographicCamera(-window.innerWidth / scale_height, window.innerWidth / scale_height, window.innerHeight / scale_height, -window.innerHeight / scale_height, 1, 1000);
+        camera3 = new THREE.OrthographicCamera(-window.innerWidth / scale_height, window.innerWidth / scale_height, window.innerHeight / scale_height, -window.innerHeight / scale_height, 1, 1000);
+    }
+
+    else {
+        camera1 = new THREE.OrthographicCamera(-window.innerWidth / scale_width, window.innerWidth / scale_width, window.innerHeight / scale_width, -window.innerHeight / scale_width, 1, 1000);
+        camera2 = new THREE.OrthographicCamera(-window.innerWidth / scale_width, window.innerWidth / scale_width, window.innerHeight / scale_width, -window.innerHeight / scale_width, 1, 1000);
+        camera3 = new THREE.OrthographicCamera(-window.innerWidth / scale_width, window.innerWidth / scale_width, window.innerHeight / scale_width, -window.innerHeight / scale_width, 1, 1000);
+    }
+
+    last_width = window.innerWidth;
+    last_height = window.innerHeight;
+
+    camera1.position.set(50, 50, 50);
     camera1.lookAt(scene.position);
 
-    camera = camera1;
-
-    camera2 = new THREE.OrthographicCamera(viewSize * aspectRatio / -15, viewSize * aspectRatio / 15, viewSize / 15, viewSize / -15, 1, 1000);
-    camera2.position.x = 0;
-    camera2.position.y = 100;
-    camera2.position.z = 0;
+    camera2.position.set(0, 100, 0);
     camera2.lookAt(scene.position);
-
-    camera3 = new THREE.OrthographicCamera(viewSize * aspectRatio / -15, viewSize * aspectRatio / 15, viewSize / 15, viewSize / -15, 1, 1000);
-    camera3.position.x = 0;
-    camera3.position.y = 0;
-    camera3.position.z = 100;
+    
+    camera3.position.set(0, 0, 100);
     camera3.lookAt(scene.position);
+
+    camera = camera1;
 }
 
 function createScene() {
@@ -337,20 +347,49 @@ function createScene() {
 }
 
 function onResize() {
-    var new_height = window.innerWidth / aspectRatio;
-    if(new_height <= window.innerHeight){
-        camera1.aspect = aspectRatio;
-        camera2.aspect = aspectRatio;
-        camera3.aspect = aspectRatio;
-        renderer.setSize(window.innerWidth, new_height);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+	scale_width = (window.innerWidth * scale_width) / last_width;
+	scale_height = (window.innerHeight * scale_height) / last_height;
+
+	last_width = window.innerWidth;
+	last_height = window.innerHeight;
+
+	if (window.innerWidth / window.innerHeight > ratio) {
+        camera1.left = -window.innerWidth / scale_height;
+	    camera1.right = window.innerWidth / scale_height;
+	    camera1.top = window.innerHeight / scale_height;
+	    camera1.bottom = -window.innerHeight / scale_height;
+
+        camera2.left = -window.innerWidth / scale_height;
+	    camera2.right = window.innerWidth / scale_height;
+	    camera2.top = window.innerHeight / scale_height;
+	    camera2.bottom = -window.innerHeight / scale_height;
+
+        camera3.left = -window.innerWidth / scale_height;
+	    camera3.right = window.innerWidth / scale_height;
+	    camera3.top = window.innerHeight / scale_height;
+	    camera3.bottom = -window.innerHeight / scale_height;
     }
-    else{
-        camera1.aspect = 1 / aspectRatio;
-        camera2.aspect = 1 / aspectRatio;
-        camera3.aspect = 1 / aspectRatio;
-        renderer.setSize(window.innerHeight * aspectRatio, window.innerHeight);
+	else {
+        camera1.left = -window.innerWidth / scale_width;
+	    camera1.right = window.innerWidth / scale_width;
+	    camera1.top = window.innerHeight / scale_width;
+	    camera1.bottom = -window.innerHeight / scale_width;
+
+        camera2.left = -window.innerWidth / scale_width;
+	    camera2.right = window.innerWidth / scale_width;
+	    camera2.top = window.innerHeight / scale_width;
+	    camera2.bottom = -window.innerHeight / scale_width;
+
+        camera3.left = -window.innerWidth / scale_width;
+	    camera3.right = window.innerWidth / scale_width;
+	    camera3.top = window.innerHeight / scale_width;
+	    camera3.bottom = -window.innerHeight / scale_width;
     }
-    camera.updateProjectionMatrix();
+    camera1.updateProjectionMatrix();
+    camera2.updateProjectionMatrix();
+    camera3.updateProjectionMatrix();
 }
 
 function onKeyDown(e) {
@@ -557,8 +596,11 @@ function init() {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
 
+    scale_width = window.innerWidth * scale;
+	scale_height = window.innerHeight * scale * ratio;
+    
     document.body.appendChild(renderer.domElement);
-
+    
     loadTexture();
 
     createScene();
