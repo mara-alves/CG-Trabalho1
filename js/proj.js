@@ -8,10 +8,10 @@ var geometry, material, mesh;
 var ball, plane, tube, cube, pyramid;
 
 //articulate objects on the scene + pivot
-var mainTorus, secondTorus, sphere, pivot;
+var mainBody, mainTorus, secondTorus, sphere, pivot;
 
 //var clock = new THREE.Clock();
-//var delta = 0;
+//var delta;
 
 //rotation booleans
 //RMP - Q, RMN - W, R2P - A, R2N - S, RSP - Z, RSN - X 
@@ -22,9 +22,14 @@ var rotMainPositive = false,
     rotSecondNegative = false,
     rotSphereNegative = false;
 
-//translation
+//translation booleans
 //X+: ->, X-: <-, Y+: up, Y-: down, Z+: C, Z-: D
-var translateVector = new THREE.Vector3(0, 0, 0);
+var moveXPositive = false,
+    moveXNegative = false,
+    moveYPositive = false,
+    moveYNegative = false,
+    moveZPositive = false,
+    moveZNegative = false;
 
 //articulate objects measurements
 var mainTorusRadius = 10,
@@ -126,6 +131,8 @@ function createFish(x, y, z) {
 function createFigure(x, y, z) {
     'use strict';
 
+    mainBody = new THREE.Object3D();
+
     material = new THREE.MeshPhysicalMaterial({ color: '#cacaff' });
     geometry = new THREE.TorusGeometry(mainTorusRadius, mainTorusTubeRadius, 16, 50);
     mainTorus = new THREE.Mesh(geometry, material);
@@ -154,7 +161,8 @@ function createFigure(x, y, z) {
     pivot.add(sphere);
     secondTorus.add(pivot);
     mainTorus.add(secondTorus);
-    scene.add(mainTorus);
+    mainBody.add(mainTorus);
+    scene.add(mainBody);
 }
 
 function createCylinders(x, y, z) {
@@ -400,35 +408,29 @@ function onKeyDown(e) {
 
             // =-=-=| Translations |=-=-=
         case 37: //left arrow
-            if (translateVector.x > -1)
-                translateVector.x -= 1;
+            moveXNegative = true;
             break;
 
         case 39: //right arrow
-            if (translateVector.x < 1)
-                translateVector.x += 1;
+            moveXPositive = true;
             break;
 
         case 38: //up arrow
-            if (translateVector.y < 1)
-                translateVector.y += 1;
+            moveYPositive = true;
             break;
 
         case 40: //down arrow
-            if (translateVector.y > -1)
-                translateVector.y -= 1;
+            moveYNegative = true;
             break;
 
         case 68: //D
         case 100: //d
-            if (translateVector.z > -1)
-                translateVector.z -= 1;
+            moveZNegative = true;
             break;
 
         case 67: //C
         case 99: //c
-            if (translateVector.z < 1)
-                translateVector.z += 1;
+            moveZPositive = true;
             break;
     }
 }
@@ -471,41 +473,38 @@ function onKeyUp(e) {
             // =-=-=| Translations |=-=-=
 
         case 37: //left arrow
-            if (translateVector.x < 1)
-                translateVector.x += 1;
+            moveXNegative = false;
             break;
 
         case 39: //right arrow
-            if (translateVector.x > -1)
-                translateVector.x -= 1;
+            moveXPositive = false;
             break;
 
         case 38: //up arrow
-            if (translateVector.y > -1)
-                translateVector.y -= 1;
+            moveYPositive = false;
             break;
 
         case 40: //down arrow
-            if (translateVector.y < 1)
-                translateVector.y += 1;
+            moveYNegative = false;
             break;
 
         case 68: //D
         case 100: //d
-            if (translateVector.z < 1)
-                translateVector.z += 1;
+            moveZNegative = false;
             break;
 
         case 67: //C
         case 99: //c
-            if (translateVector.z > -1)
-                translateVector.z -= 1;
+            moveZPositive = false;
             break;
     }
 }
 
 function animate() {
     'use strict';
+
+    //delta = clock.getDelta();
+    var translateVector = new THREE.Vector3(0, 0, 0);
 
     if (rotMainPositive)
         mainTorus.rotateY(0.02);
@@ -525,9 +524,30 @@ function animate() {
     if (rotSphereNegative)
         pivot.rotation.x -= 0.02;
 
-    mainTorus.translateX(translateVector.x);
-    mainTorus.translateY(translateVector.y);
-    mainTorus.translateZ(translateVector.z);
+    if (moveXPositive)
+        translateVector.x += 1;
+
+    if (moveXNegative)
+        translateVector.x -= 1;
+
+    if (moveYPositive)
+        translateVector.y += 1;
+
+    if (moveYNegative)
+        translateVector.y -= 1;
+
+    if (moveZPositive)
+        translateVector.z += 1;
+
+    if (moveZNegative)
+        translateVector.z -= 1;
+
+    //delta = clock.getDelta();
+    //console.log(delta);
+
+    mainBody.translateX(translateVector.x);
+    mainBody.translateY(translateVector.y);
+    mainBody.translateZ(translateVector.z);
 
     requestAnimationFrame(animate);
     render();
