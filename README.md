@@ -5,5 +5,5 @@ Consiste na modelação de uma composição artística, inspirada pelo estilo de
 
 Para mais detalhes do que foi pedido consultar o [Enunciado.pdf](./Enunciado.pdf). A resolução das alíneas referentes a esboços em papel encontra-se em [CG_G04_E1.pdf](./CG_G04_E1.pdf).
 
-## Correr o programa
+## Correr o Programa
 Basta transferir o projeto e abrir o *index.html* para que este corra localmente.
