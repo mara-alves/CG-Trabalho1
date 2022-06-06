@@ -1,5 +1,5 @@
 # CG-Trabalho1
-Segundo trabalho para a cadeira de *Computação Gráfica*, do ano letivo 2021/22. Realizado com [@AbelhaMaia16](https://github.com/AbelhaMaia16) e [@margarida-nico](https://github.com/AbelhaMaia16).
+Segundo trabalho para a cadeira de *Computação Gráfica*, do ano letivo 2021/22. Realizado com [@AbelhaMaia16](https://github.com/AbelhaMaia16) e [@margarida-nico](https://github.com/margarida-nico).
 
 Consiste na modelação de uma composição artística, inspirada pelo estilo de Kandinsky, interativa. É utilizada a biblioteca Three.js.
 
